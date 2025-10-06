@@ -13,7 +13,13 @@ const counterElement = document.getElementById("counter")!;
 let displayCount: string = "0";
 
 button.addEventListener("click", () => {
+  incrementCounter();
+});
+
+setInterval(incrementCounter, 1000);
+
+function incrementCounter() {
   counter++;
   displayCount = `${counter}`;
   counterElement.textContent = displayCount;
-});
+}
