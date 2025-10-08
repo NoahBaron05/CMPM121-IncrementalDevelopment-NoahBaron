@@ -13,13 +13,28 @@ const counterElement = document.getElementById("counter")!;
 let displayCount: string = "0";
 
 button.addEventListener("click", () => {
-  incrementCounter();
+  incrementCounter(1);
 });
 
-setInterval(incrementCounter, 1000);
-
-function incrementCounter() {
-  counter++;
-  displayCount = `${counter}`;
+function incrementCounter(amount: number) {
+  counter += amount;
+  displayCount = `${counter.toFixed(1)}`;
   counterElement.textContent = displayCount;
 }
+
+let lastTime: number | null = null;
+
+function gameLoop(currentTime: number) {
+  //Finds the increment value based on the time passed
+  if (lastTime != null) {
+    const deltaTime = currentTime - lastTime;
+    const incrementAmount = deltaTime / 1000;
+    incrementCounter(incrementAmount);
+  }
+
+  //End of loop
+  lastTime = currentTime;
+  requestAnimationFrame(gameLoop);
+}
+
+requestAnimationFrame(gameLoop);
