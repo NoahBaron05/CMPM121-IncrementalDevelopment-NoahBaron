@@ -12,36 +12,78 @@ document.body.innerHTML = `
     <button style="width: 50px; height: 50px; font-size: 25px;" id="increment">⛄
   </div>
   <div style="margin-top: 10px;">
-    <button style="width: 100px; height: 25px; font-size: 12px;" id="auto" disabled>Auto Snowmen</button>
-    <span id="autoCounter">
+    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoA" disabled>Auto Snowmen A</button>
+    <span id="autoCounterA">
   </div>
   <div style="font-size: 15px;">
     Cost: 10 Snowmen
   </div>
+  <div style="margin-top: 10px;">
+    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoB" disabled>Auto Snowmen B</button>
+    <span id="autoCounterB">
+  </div>
+  <div style="font-size: 15px;">
+    Cost: 100 Snowmen
+  </div>
+  <div style="margin-top: 10px;">
+    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoC" disabled>Auto Snowmen B</button>
+    <span id="autoCounterC">
+  </div>
+  <div style="font-size: 15px;">
+    Cost: 1000 Snowmen
+  </div>
 `;
 
 const snowManButton = document.getElementById("increment")!;
-const autoButton = document.getElementById("auto")! as HTMLButtonElement;
 const counterElement = document.getElementById("counter")!;
-const autoCounterElement = document.getElementById("autoCounter")!;
+const autoButtonA = document.getElementById("autoA")! as HTMLButtonElement;
+const autoCounterElementA = document.getElementById("autoCounterA")!;
+const autoButtonB = document.getElementById("autoB")! as HTMLButtonElement;
+const autoCounterElementB = document.getElementById("autoCounterB")!;
+const autoButtonC = document.getElementById("autoC")! as HTMLButtonElement;
+const autoCounterElementC = document.getElementById("autoCounterC")!;
 const snowmenPerSecondElement = document.getElementById("growth")!;
 
 let displayCount: string = "0";
-let autoDisplayCount: number = 0;
+let autoDisplayCountA: number = 0;
+let autoDisplayCountB: number = 0;
+let autoDisplayCountC: number = 0;
 let growthRate: number = 0;
 
 snowManButton.addEventListener("click", () => {
   incrementCounter(1);
 });
 
-autoButton.addEventListener("click", () => {
+autoButtonA.addEventListener("click", () => {
   if (counter >= 10) {
-    numAuto++;
+    numAuto += 0.1;
     counter -= 10;
 
-    autoDisplayCount++;
-    autoCounterElement.textContent = `${autoDisplayCount}`;
-    autoButton.disabled = true;
+    autoDisplayCountA++;
+    autoCounterElementA.textContent = `${autoDisplayCountA}`;
+    autoButtonA.disabled = true;
+  }
+});
+
+autoButtonB.addEventListener("click", () => {
+  if (counter >= 100) {
+    numAuto += 2;
+    counter -= 100;
+
+    autoDisplayCountB++;
+    autoCounterElementB.textContent = `${autoDisplayCountB}`;
+    autoButtonB.disabled = true;
+  }
+});
+
+autoButtonC.addEventListener("click", () => {
+  if (counter >= 1000) {
+    numAuto += 50;
+    counter -= 1000;
+
+    autoDisplayCountC++;
+    autoCounterElementC.textContent = `${autoDisplayCountC}`;
+    autoButtonC.disabled = true;
   }
 });
 
@@ -76,7 +118,13 @@ function gameLoop(currentTime: number) {
   }
 
   if (counter >= 10) {
-    autoButton.disabled = false;
+    autoButtonA.disabled = false;
+  }
+  if (counter >= 100) {
+    autoButtonB.disabled = false;
+  }
+  if (counter >= 1000) {
+    autoButtonC.disabled = false;
   }
 
   //End of loop
