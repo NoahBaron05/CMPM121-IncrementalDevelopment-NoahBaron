@@ -3,33 +3,37 @@ import "./style.css";
 let counter = 0;
 
 document.body.innerHTML = `
-  <div style="font-size: 20px;">  
+  <div style="font-size: 40px; text-align: center;">  
     Snowmen ⛄: <span id="counter">0</span>
   </div>
-  <div style="font-size: 15px;">
+  <div style="font-size: 25px; text-align: center;">
+    <br>
     <span id="growth">0</span> Snowmen per Second
+    <br><br>
   <div style="margin-top: 10px;">
-    <button style="width: 50px; height: 50px; font-size: 25px;" id="increment">⛄
+    <button style="width: 150px; height: 150px; font-size: 75px;" id="increment">⛄</button>
+    <p>Make Snowman</p>
+    <br>
   </div>
-  <div style="margin-top: 10px;">
-    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoA" disabled>Auto Snowmen A</button>
+  <div style="margin-top: 10px; text-align: center;">
+    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoA" disabled>Snow Cone Maker</button>
     <span id="autoCounterA">
   </div>
-  <div style="font-size: 15px;">
+  <div style="font-size: 15px; text-align: center;">
     Cost: <span id="autoCostA">10</span> Snowmen
   </div>
-  <div style="margin-top: 10px;">
-    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoB" disabled>Auto Snowmen B</button>
+  <div style="margin-top: 10px; text-align: center;">
+    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoB" disabled>Santa's Elves</button>
     <span id="autoCounterB">
   </div>
-  <div style="font-size: 15px;">
+  <div style="font-size: 15px; text-align: center;">
     Cost: <span id="autoCostB">100</span> Snowmen
   </div>
-  <div style="margin-top: 10px;">
-    <button style="width: 125px; height: 25px; font-size: 12px;" id="autoC" disabled>Auto Snowmen B</button>
+  <div style="margin-top: 10px; text-align: center;">
+    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoC" disabled>Snowman Factory</button>
     <span id="autoCounterC">
   </div>
-  <div style="font-size: 15px;">
+  <div style="font-size: 15px; text-align: center;">
     Cost: <span id="autoCostC">1000</span> Snowmen
   </div>
 `;
