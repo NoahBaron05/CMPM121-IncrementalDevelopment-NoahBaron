@@ -16,21 +16,21 @@ document.body.innerHTML = `
     <span id="autoCounterA">
   </div>
   <div style="font-size: 15px;">
-    Cost: 10 Snowmen
+    Cost: <span id="autoCostA">10</span> Snowmen
   </div>
   <div style="margin-top: 10px;">
     <button style="width: 125px; height: 25px; font-size: 12px;" id="autoB" disabled>Auto Snowmen B</button>
     <span id="autoCounterB">
   </div>
   <div style="font-size: 15px;">
-    Cost: 100 Snowmen
+    Cost: <span id="autoCostB">100</span> Snowmen
   </div>
   <div style="margin-top: 10px;">
     <button style="width: 125px; height: 25px; font-size: 12px;" id="autoC" disabled>Auto Snowmen B</button>
     <span id="autoCounterC">
   </div>
   <div style="font-size: 15px;">
-    Cost: 1000 Snowmen
+    Cost: <span id="autoCostC">1000</span> Snowmen
   </div>
 `;
 
@@ -42,6 +42,9 @@ const autoButtonB = document.getElementById("autoB")! as HTMLButtonElement;
 const autoCounterElementB = document.getElementById("autoCounterB")!;
 const autoButtonC = document.getElementById("autoC")! as HTMLButtonElement;
 const autoCounterElementC = document.getElementById("autoCounterC")!;
+const autoCostAElement = document.getElementById("autoCostA")!;
+const autoCostBElement = document.getElementById("autoCostB")!;
+const autoCostCElement = document.getElementById("autoCostC")!;
 const snowmenPerSecondElement = document.getElementById("growth")!;
 
 let displayCount: string = "0";
@@ -49,41 +52,50 @@ let autoDisplayCountA: number = 0;
 let autoDisplayCountB: number = 0;
 let autoDisplayCountC: number = 0;
 let growthRate: number = 0;
+let autoCostA = 10;
+let autoCostB = 100;
+let autoCostC = 1000;
 
 snowManButton.addEventListener("click", () => {
   incrementCounter(1);
 });
 
 autoButtonA.addEventListener("click", () => {
-  if (counter >= 10) {
+  if (counter >= autoCostA) {
     numAuto += 0.1;
-    counter -= 10;
+    counter -= autoCostA;
+    autoCostA *= 1.15;
 
     autoDisplayCountA++;
     autoCounterElementA.textContent = `${autoDisplayCountA}`;
     autoButtonA.disabled = true;
+    autoCostAElement.textContent = `${autoCostA.toFixed(1)}`;
   }
 });
 
 autoButtonB.addEventListener("click", () => {
-  if (counter >= 100) {
+  if (counter >= autoCostB) {
     numAuto += 2;
-    counter -= 100;
+    counter -= autoCostB;
+    autoCostB *= 1.15;
 
     autoDisplayCountB++;
     autoCounterElementB.textContent = `${autoDisplayCountB}`;
     autoButtonB.disabled = true;
+    autoCostBElement.textContent = `${autoCostB.toFixed(1)}`;
   }
 });
 
 autoButtonC.addEventListener("click", () => {
-  if (counter >= 1000) {
+  if (counter >= autoCostC) {
     numAuto += 50;
-    counter -= 1000;
+    counter -= autoCostC;
+    autoCostC *= 1.15;
 
     autoDisplayCountC++;
     autoCounterElementC.textContent = `${autoDisplayCountC}`;
     autoButtonC.disabled = true;
+    autoCostCElement.textContent = `${autoCostC.toFixed(1)}`;
   }
 });
 
@@ -117,13 +129,13 @@ function gameLoop(currentTime: number) {
     }
   }
 
-  if (counter >= 10) {
+  if (counter >= autoCostA) {
     autoButtonA.disabled = false;
   }
-  if (counter >= 100) {
+  if (counter >= autoCostB) {
     autoButtonB.disabled = false;
   }
-  if (counter >= 1000) {
+  if (counter >= autoCostC) {
     autoButtonC.disabled = false;
   }
 
