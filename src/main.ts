@@ -53,6 +53,18 @@ const availableItems: Item[] = [
     rate: 50,
     count: 0,
   },
+  {
+    name: "Arctic Research Lab",
+    cost: 10000,
+    rate: 200,
+    count: 0,
+  },
+  {
+    name: "Frost Forge",
+    cost: 250000,
+    rate: 1000,
+    count: 0,
+  },
 ];
 
 //Create HTML buttons
