@@ -15,104 +15,118 @@ document.body.innerHTML = `
     <p>Make Snowman</p>
     <br>
   </div>
-  <div style="margin-top: 10px; text-align: center;">
-    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoA" disabled>Snow Cone Maker</button>
-    <span id="autoCounterA">
-  </div>
-  <div style="font-size: 15px; text-align: center;">
-    Cost: <span id="autoCostA">10</span> Snowmen
-  </div>
-  <div style="margin-top: 10px; text-align: center;">
-    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoB" disabled>Santa's Elves</button>
-    <span id="autoCounterB">
-  </div>
-  <div style="font-size: 15px; text-align: center;">
-    Cost: <span id="autoCostB">100</span> Snowmen
-  </div>
-  <div style="margin-top: 10px; text-align: center;">
-    <button style="width: 150px; height: 50px; font-size: 16px;" id="autoC" disabled>Snowman Factory</button>
-    <span id="autoCounterC">
-  </div>
-  <div style="font-size: 15px; text-align: center;">
-    Cost: <span id="autoCostC">1000</span> Snowmen
-  </div>
+  <div id="shop" style="margin-top: 10px; text-align: center;"></div>
 `;
 
 const snowManButton = document.getElementById("increment")!;
 const counterElement = document.getElementById("counter")!;
-const autoButtonA = document.getElementById("autoA")! as HTMLButtonElement;
-const autoCounterElementA = document.getElementById("autoCounterA")!;
-const autoButtonB = document.getElementById("autoB")! as HTMLButtonElement;
-const autoCounterElementB = document.getElementById("autoCounterB")!;
-const autoButtonC = document.getElementById("autoC")! as HTMLButtonElement;
-const autoCounterElementC = document.getElementById("autoCounterC")!;
-const autoCostAElement = document.getElementById("autoCostA")!;
-const autoCostBElement = document.getElementById("autoCostB")!;
-const autoCostCElement = document.getElementById("autoCostC")!;
 const snowmenPerSecondElement = document.getElementById("growth")!;
+const shopContainer = document.getElementById("shop")!;
 
-let displayCount: string = "0";
-let autoDisplayCountA: number = 0;
-let autoDisplayCountB: number = 0;
-let autoDisplayCountC: number = 0;
-let growthRate: number = 0;
-let autoCostA = 10;
-let autoCostB = 100;
-let autoCostC = 1000;
-
-snowManButton.addEventListener("click", () => {
-  incrementCounter(1);
-});
-
-autoButtonA.addEventListener("click", () => {
-  if (counter >= autoCostA) {
-    numAuto += 0.1;
-    counter -= autoCostA;
-    autoCostA *= 1.15;
-
-    autoDisplayCountA++;
-    autoCounterElementA.textContent = `${autoDisplayCountA}`;
-    autoButtonA.disabled = true;
-    autoCostAElement.textContent = `${autoCostA.toFixed(1)}`;
-  }
-});
-
-autoButtonB.addEventListener("click", () => {
-  if (counter >= autoCostB) {
-    numAuto += 2;
-    counter -= autoCostB;
-    autoCostB *= 1.15;
-
-    autoDisplayCountB++;
-    autoCounterElementB.textContent = `${autoDisplayCountB}`;
-    autoButtonB.disabled = true;
-    autoCostBElement.textContent = `${autoCostB.toFixed(1)}`;
-  }
-});
-
-autoButtonC.addEventListener("click", () => {
-  if (counter >= autoCostC) {
-    numAuto += 50;
-    counter -= autoCostC;
-    autoCostC *= 1.15;
-
-    autoDisplayCountC++;
-    autoCounterElementC.textContent = `${autoDisplayCountC}`;
-    autoButtonC.disabled = true;
-    autoCostCElement.textContent = `${autoCostC.toFixed(1)}`;
-  }
-});
-
-function incrementCounter(amount: number) {
-  counter += amount;
-  displayCount = `${counter.toFixed(1)}`;
-  counterElement.textContent = displayCount;
+//Item definitions
+interface Item {
+  name: string;
+  cost: number;
+  rate: number;
+  count: number;
+  button?: HTMLButtonElement;
+  costEl?: HTMLElement;
+  counterEl?: HTMLElement;
 }
+
+const availableItems: Item[] = [
+  {
+    name: "Snow Cone Maker",
+    cost: 10,
+    rate: 0.1,
+    count: 0,
+  },
+  {
+    name: "Santa's Elves",
+    cost: 100,
+    rate: 2,
+    count: 0,
+  },
+  {
+    name: "Snowman Factory",
+    cost: 1000,
+    rate: 50,
+    count: 0,
+  },
+];
+
+//Create HTML buttons
+availableItems.forEach((item) => {
+  const itemContainer = document.createElement("div");
+  itemContainer.style.marginTop = "10px";
+  itemContainer.style.textAlign = "center";
+
+  const button = document.createElement("button");
+  button.style.width = "150px";
+  button.style.height = "50px";
+  button.style.fontSize = "16px";
+  button.textContent = item.name;
+  button.disabled = true;
+
+  const counterEl = document.createElement("span");
+  counterEl.textContent = "0";
+
+  const costContainer = document.createElement("div");
+  costContainer.style.fontSize = "15px";
+  costContainer.textContent = "Cost: ";
+
+  const costEl = document.createElement("span");
+  costEl.textContent = `${item.cost}`;
+  costContainer.appendChild(costEl);
+
+  itemContainer.appendChild(button);
+  itemContainer.appendChild(counterEl);
+  itemContainer.appendChild(document.createElement("br"));
+  itemContainer.appendChild(costContainer);
+  shopContainer.appendChild(itemContainer);
+
+  item.button = button;
+  item.costEl = costEl;
+  item.counterEl = counterEl;
+});
+
+//Necessary starting values
+let displayCount: string = "0";
+let growthRate: number = 0;
+const costInflation: number = 1.15;
 
 let lastTime: number | null = null;
 let numAuto: number = 0;
 let snowmenCountPerSecond: number = 0;
 let timeAccumulator: number = 0;
+
+//Manual clicking
+snowManButton.addEventListener("click", () => {
+  incrementCounter(1);
+});
+
+//Purchasing items logic
+availableItems.forEach((item) => {
+  item.button!.addEventListener("click", () => {
+    if (counter >= item.cost) {
+      numAuto += item.rate;
+      counter -= item.cost;
+      item.cost *= costInflation;
+
+      item.count++;
+      item.counterEl!.textContent = `${item.count}`;
+      item.button!.disabled = true;
+      item.costEl!.textContent = `${item.cost.toFixed(1)}`;
+    }
+  });
+});
+
+//Changes the counter to the updated value
+function incrementCounter(amount: number) {
+  counter += amount;
+  displayCount = `${counter.toFixed(1)}`;
+  counterElement.textContent = displayCount;
+}
 
 function gameLoop(currentTime: number) {
   if (lastTime != null) {
@@ -120,6 +134,7 @@ function gameLoop(currentTime: number) {
     const deltaTime = currentTime - lastTime;
     timeAccumulator += deltaTime;
 
+    //Adds snowmen generated to the total
     const incrementAmount = (deltaTime / 1000) * numAuto;
     incrementCounter(incrementAmount);
 
@@ -133,15 +148,12 @@ function gameLoop(currentTime: number) {
     }
   }
 
-  if (counter >= autoCostA) {
-    autoButtonA.disabled = false;
-  }
-  if (counter >= autoCostB) {
-    autoButtonB.disabled = false;
-  }
-  if (counter >= autoCostC) {
-    autoButtonC.disabled = false;
-  }
+  //Enable buttons if affordable
+  availableItems.forEach((item) => {
+    if (counter >= item.cost) {
+      item.button!.disabled = false;
+    }
+  });
 
   //End of loop
   lastTime = currentTime;
