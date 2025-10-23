@@ -1,29 +1,16 @@
 import "./style.css";
 
+// Variable initialization and interface setup-------------------------------------------------------------------------
 let counter = 0;
+let displayCount: string = "0";
+let growthRate: number = 0;
+const costInflation: number = 1.15;
 
-document.body.innerHTML = `
-  <div style="font-size: 40px; text-align: center;">  
-    Snowmen ⛄: <span id="counter">0</span>
-  </div>
-  <div style="font-size: 25px; text-align: center;">
-    <br>
-    <span id="growth">0</span> Snowmen per Second
-    <br><br>
-  <div style="margin-top: 10px;">
-    <button style="width: 150px; height: 150px; font-size: 75px;" id="increment">⛄</button>
-    <p>Make Snowman</p>
-    <br>
-  </div>
-  <div id="shop" style="margin-top: 10px; text-align: center;"></div>
-`;
+let lastTime: number | null = null;
+let autoGrowthRate: number = 0;
+let growthCountPerSecond: number = 0;
+let timeAccumulator: number = 0;
 
-const snowManButton = document.getElementById("increment")!;
-const counterElement = document.getElementById("counter")!;
-const snowmenPerSecondElement = document.getElementById("growth")!;
-const shopContainer = document.getElementById("shop")!;
-
-//Item definitions
 interface Item {
   name: string;
   cost: number;
@@ -77,7 +64,28 @@ const availableItems: Item[] = [
   },
 ];
 
-//Create HTML buttons
+// DOM Construction and Setup --------------------------------------------------------------------------------------------------
+document.body.innerHTML = `
+  <div style="font-size: 40px; text-align: center;">  
+    Snowmen ⛄: <span id="counter">0</span>
+  </div>
+  <div style="font-size: 25px; text-align: center;">
+    <br>
+    <span id="growth">0</span> Snowmen per Second
+    <br><br>
+  <div style="margin-top: 10px;">
+    <button style="width: 150px; height: 150px; font-size: 75px;" id="increment">⛄</button>
+    <p>Make Snowman</p>
+    <br>
+  </div>
+  <div id="shop" style="margin-top: 10px; text-align: center;"></div>
+`;
+
+const incrementButton = document.getElementById("increment")!;
+const counterElement = document.getElementById("counter")!;
+const growthPerSecondElement = document.getElementById("growth")!;
+const shopContainer = document.getElementById("shop")!;
+
 availableItems.forEach((item) => {
   const itemContainer = document.createElement("div");
   itemContainer.style.marginTop = "10px";
@@ -139,26 +147,15 @@ availableItems.forEach((item) => {
   item.counterEl = counterEl;
 });
 
-//Necessary starting values
-let displayCount: string = "0";
-let growthRate: number = 0;
-const costInflation: number = 1.15;
-
-let lastTime: number | null = null;
-let autoSnowmenRate: number = 0;
-let snowmenCountPerSecond: number = 0;
-let timeAccumulator: number = 0;
-
-//Manual clicking
-snowManButton.addEventListener("click", () => {
+// Event Listeners --------------------------------------------------------------------------------------------------------------
+incrementButton.addEventListener("click", () => {
   incrementCounter(1);
 });
 
-//Purchasing items logic
 availableItems.forEach((item) => {
   item.button!.addEventListener("click", () => {
     if (counter >= item.cost) {
-      autoSnowmenRate += item.rate;
+      autoGrowthRate += item.rate;
       counter -= item.cost;
       item.cost *= costInflation;
       item.count++;
@@ -170,29 +167,30 @@ availableItems.forEach((item) => {
   });
 });
 
-//Changes the counter to the updated value
+// Functions ------------------------------------------------------------------------------------------------------------------
 function incrementCounter(amount: number) {
   counter += amount;
   displayCount = `${counter.toFixed(1)}`;
   counterElement.textContent = displayCount;
 }
 
+// Main game loop --------------------------------------------------------------------------------------------------------------
 function gameLoop(currentTime: number) {
   if (lastTime != null) {
     //Finds the increment value based on the time passed
     const deltaTime = currentTime - lastTime;
     timeAccumulator += deltaTime;
 
-    //Adds snowmen generated to the total
-    const incrementAmount = (deltaTime / 1000) * autoSnowmenRate;
+    //Adds growth generated to the total
+    const incrementAmount = (deltaTime / 1000) * autoGrowthRate;
     incrementCounter(incrementAmount);
 
-    //Finds the current snowmen per second
-    snowmenCountPerSecond += incrementAmount;
+    //Finds the current growth per second
+    growthCountPerSecond += incrementAmount;
     if (timeAccumulator >= 1000) {
-      growthRate = snowmenCountPerSecond;
-      snowmenPerSecondElement.textContent = `${growthRate.toFixed(1)}`;
-      snowmenCountPerSecond = 0;
+      growthRate = growthCountPerSecond;
+      growthPerSecondElement.textContent = `${growthRate.toFixed(1)}`;
+      growthCountPerSecond = 0;
       timeAccumulator = 0;
     }
   }
