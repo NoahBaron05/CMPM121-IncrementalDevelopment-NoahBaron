@@ -1,3 +1,9 @@
-# CMPM 121 D1 Project
+# Noah Baron CMPM 121 D1 Project
 
-This is the starting point for your CMPM 121 D1 project. The goal of this project is to create a simple web application using TypeScript, Vite, and modern web development practices. Students should make sure to remove _this_ content from their README.md file and replace it with their own project documentation.
+An incremental clicking game, based off of Universal Paperclips and Cookie Clicker. In this game, you click snowmen to generate a snowman army.
+
+Inspiration:
+
+InvinciblePyro. This dev inspired me to have my buttons hidden from the start, and as the player generates more snowmen they start to appear. This gives the player a sense of unease, and makes them unsure of all of the content that is in the game from the start.
+Link to their repository: https://github.com/InvinciblePyro/syhaw-website
+

@@ -1,15 +1,15 @@
 import "./style.css";
 
-// Variable initialization and interface setup-------------------------------------------------------------------------
+// ---------- Variables ----------
 let counter = 0;
-let displayCount: string = "0";
-let growthRate: number = 0;
-const costInflation: number = 1.15;
+let displayCount = "0";
+let growthRate = 0;
+const costInflation = 1.15;
 
 let lastTime: number | null = null;
-let autoGrowthRate: number = 0;
-let growthCountPerSecond: number = 0;
-let timeAccumulator: number = 0;
+let autoGrowthRate = 0;
+let growthCountPerSecond = 0;
+let timeAccumulator = 0;
 
 interface Item {
   name: string;
@@ -20,51 +20,49 @@ interface Item {
   button?: HTMLButtonElement;
   costEl?: HTMLElement;
   counterEl?: HTMLElement;
+  container?: HTMLDivElement;
 }
 
+// ---------- Items ----------
 const availableItems: Item[] = [
   {
     name: "Snow Cone Maker",
     cost: 10,
     rate: 0.1,
     count: 0,
-    description:
-      "A small snowcone make to generate snowmen (0.1 Snowmen per second)",
+    description: "A small snowcone maker to generate snowmen (0.1/s)",
   },
   {
     name: "Santa's Elves",
     cost: 100,
     rate: 2,
     count: 0,
-    description:
-      "An elf from Santa's workshop to make snowmen (2 Snowmen per second)",
+    description: "An elf from Santa's workshop to make snowmen (2/s)",
   },
   {
     name: "Snowman Factory",
     cost: 1000,
     rate: 50,
     count: 0,
-    description: "A factory to rapidly produce snowmen (50 Snowmen per second)",
+    description: "A factory to rapidly produce snowmen (50/s)",
   },
   {
     name: "Arctic Research Lab",
     cost: 10000,
     rate: 200,
     count: 0,
-    description:
-      "A top secret research lab to optimally grow snowmen (200 Snowmen per second)",
+    description: "A top secret lab to optimally grow snowmen (200/s)",
   },
   {
     name: "Frost Forge",
     cost: 250000,
     rate: 1000,
     count: 0,
-    description:
-      "An ancient forge built soley to generate a snomwman army (1000 Snowmen per second)",
+    description: "An ancient forge for building a snowman army (1000/s)",
   },
 ];
 
-// DOM Construction and Setup --------------------------------------------------------------------------------------------------
+// ---------- DOM Setup ----------
 document.body.innerHTML = `
   <div style="font-size: 40px; text-align: center;">  
     Snowmen ⛄: <span id="counter">0</span>
@@ -73,81 +71,69 @@ document.body.innerHTML = `
     <br>
     <span id="growth">0</span> Snowmen per Second
     <br><br>
-  <div style="margin-top: 10px;">
-    <button style="width: 150px; height: 150px; font-size: 75px;" id="increment">⛄</button>
-    <p>Make Snowman</p>
-    <br>
   </div>
-  <div id="shop" style="margin-top: 10px; text-align: center;"></div>
+  <div style="text-align:center;">
+    <button id="increment" style="width:150px; height:150px; font-size:75px;">⛄</button>
+    <p>Make Snowman</p>
+  </div>
+  <div id="shop" style="margin-top:20px; text-align:center;"></div>
 `;
 
 const incrementButton = document.getElementById("increment")!;
 const counterElement = document.getElementById("counter")!;
-const growthPerSecondElement = document.getElementById("growth")!;
+const growthElement = document.getElementById("growth")!;
 const shopContainer = document.getElementById("shop")!;
 
+// ---------- Shop Creation ----------
 availableItems.forEach((item) => {
-  const itemContainer = document.createElement("div");
-  itemContainer.style.marginTop = "10px";
-  itemContainer.style.textAlign = "center";
-  itemContainer.style.position = "relative"; // allows tooltip positioning
+  const container = document.createElement("div");
+  container.style.marginTop = "15px";
+  container.style.display = "none"; // initially hidden
 
   const button = document.createElement("button");
+  button.textContent = item.name;
   button.style.width = "150px";
   button.style.height = "50px";
   button.style.fontSize = "16px";
-  button.textContent = item.name;
   button.disabled = true;
 
-  // Tooltip box - for item description
+  const counterEl = document.createElement("div");
+  counterEl.textContent = `Owned: ${item.count}`;
+
+  const costEl = document.createElement("div");
+  costEl.textContent = `Cost: ${item.cost.toFixed(1)}`;
+
+  // Tooltip
   const tooltip = document.createElement("div");
   tooltip.textContent = item.description;
   tooltip.style.position = "absolute";
-  tooltip.style.top = "60px";
+  tooltip.style.background = "rgba(255,255,255,0.95)";
   tooltip.style.left = "50%";
   tooltip.style.transform = "translateX(-50%)";
-  tooltip.style.background = "rgba(255, 255, 255, 0.95)";
   tooltip.style.border = "1px solid #aaa";
   tooltip.style.borderRadius = "8px";
-  tooltip.style.padding = "8px";
+  tooltip.style.padding = "6px";
   tooltip.style.width = "220px";
-  tooltip.style.fontSize = "14px";
-  tooltip.style.boxShadow = "0 2px 5px rgba(0,0,0,0.2)";
   tooltip.style.display = "none";
-  tooltip.style.zIndex = "10";
+  tooltip.style.margin = "6px auto";
+  tooltip.style.fontSize = "14px";
 
-  // Hover description logic
-  button.addEventListener("mouseenter", () => {
-    tooltip.style.display = "block";
-  });
-  button.addEventListener("mouseleave", () => {
-    tooltip.style.display = "none";
-  });
+  button.addEventListener(
+    "mouseenter",
+    () => (tooltip.style.display = "block"),
+  );
+  button.addEventListener("mouseleave", () => (tooltip.style.display = "none"));
 
-  const counterEl = document.createElement("span");
-  counterEl.textContent = "0";
+  container.append(button, counterEl, costEl, tooltip);
+  shopContainer.append(container);
 
-  const costContainer = document.createElement("div");
-  costContainer.style.fontSize = "15px";
-  costContainer.textContent = "Cost: ";
-
-  const costEl = document.createElement("span");
-  costEl.textContent = `${item.cost}`;
-  costContainer.appendChild(costEl);
-
-  itemContainer.appendChild(button);
-  itemContainer.appendChild(counterEl);
-  itemContainer.appendChild(document.createElement("br"));
-  itemContainer.appendChild(costContainer);
-  itemContainer.appendChild(tooltip);
-  shopContainer.appendChild(itemContainer);
-
+  item.container = container;
   item.button = button;
   item.costEl = costEl;
   item.counterEl = counterEl;
 });
 
-// Event Listeners --------------------------------------------------------------------------------------------------------------
+// ---------- Events ----------
 incrementButton.addEventListener("click", () => {
   incrementCounter(1);
 });
@@ -155,54 +141,53 @@ incrementButton.addEventListener("click", () => {
 availableItems.forEach((item) => {
   item.button!.addEventListener("click", () => {
     if (counter >= item.cost) {
-      autoGrowthRate += item.rate;
       counter -= item.cost;
-      item.cost *= costInflation;
+      autoGrowthRate += item.rate;
       item.count++;
+      item.cost *= costInflation;
 
-      item.counterEl!.textContent = `${item.count}`;
-      item.button!.disabled = true;
-      item.costEl!.textContent = `${item.cost.toFixed(1)}`;
+      item.counterEl!.textContent = `Owned: ${item.count}`;
+      item.costEl!.textContent = `Cost: ${item.cost.toFixed(1)}`;
     }
   });
 });
 
-// Functions ------------------------------------------------------------------------------------------------------------------
+// ---------- Functions ----------
 function incrementCounter(amount: number) {
   counter += amount;
-  displayCount = `${counter.toFixed(1)}`;
+  displayCount = counter.toFixed(1);
   counterElement.textContent = displayCount;
 }
 
-// Main game loop --------------------------------------------------------------------------------------------------------------
+// ---------- Game Loop ----------
 function gameLoop(currentTime: number) {
   if (lastTime != null) {
-    //Finds the increment value based on the time passed
-    const deltaTime = currentTime - lastTime;
-    timeAccumulator += deltaTime;
+    const delta = currentTime - lastTime;
+    timeAccumulator += delta;
 
-    //Adds growth generated to the total
-    const incrementAmount = (deltaTime / 1000) * autoGrowthRate;
-    incrementCounter(incrementAmount);
+    const gain = (delta / 1000) * autoGrowthRate;
+    incrementCounter(gain);
 
-    //Finds the current growth per second
-    growthCountPerSecond += incrementAmount;
+    growthCountPerSecond += gain;
     if (timeAccumulator >= 1000) {
       growthRate = growthCountPerSecond;
-      growthPerSecondElement.textContent = `${growthRate.toFixed(1)}`;
+      growthElement.textContent = growthRate.toFixed(1);
       growthCountPerSecond = 0;
       timeAccumulator = 0;
     }
   }
 
-  //Enable buttons if affordable
+  // Handle shop item state
   availableItems.forEach((item) => {
-    if (counter >= item.cost) {
-      item.button!.disabled = false;
+    // Reveal item once it’s affordable
+    if (counter >= item.cost && item.container!.style.display === "none") {
+      item.container!.style.display = "block";
     }
+
+    // Enable or disable purchase button
+    item.button!.disabled = counter < item.cost;
   });
 
-  //End of loop
   lastTime = currentTime;
   requestAnimationFrame(gameLoop);
 }
