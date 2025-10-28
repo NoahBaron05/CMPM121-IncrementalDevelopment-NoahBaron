@@ -6,3 +6,6 @@ Inspiration:
 
 InvinciblePyro. This dev inspired me to have my buttons hidden from the start, and as the player generates more snowmen they start to appear. This gives the player a sense of unease, and makes them unsure of all of the content that is in the game from the start.
 Link to their repository: github.com/InvinciblePyro/syhaw-website
+
+aaychen313. This dev inspired me to make a seperate field for upgrades, so that players cna better know what each field of the game is, and know that there will be upgrades for the game. It can be hard to understand now with the invisible buttons inspired by InviniciblePyro.
+Link to their repository: github.com/aaychen313/cmpm121-f25-aaron-D1.a/tree/main

@@ -64,7 +64,7 @@ const availableItems: Item[] = [
 
 // ---------- DOM Setup ----------
 document.body.innerHTML = `
-  <div style="font-size: 40px; text-align: center;">  
+  <div style="font-size: 40px; text-align: center; font-weight: bold">  
     Snowmen ⛄: <span id="counter">0</span>
   </div>
   <div style="font-size: 25px; text-align: center;">
@@ -75,6 +75,9 @@ document.body.innerHTML = `
   <div style="text-align:center;">
     <button id="increment" style="width:150px; height:150px; font-size:75px;">⛄</button>
     <p>Make Snowman</p>
+  </div>
+  <div style="font-size: 35px; text-align: center; font-weight: bold">
+    <p>Upgrades:</p>
   </div>
   <div id="shop" style="margin-top:20px; text-align:center;"></div>
 `;
